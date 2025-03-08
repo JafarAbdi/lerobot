@@ -491,7 +491,9 @@ class ManipulatorRobot:
             follower_goal_pos[name] = goal_pos
 
             goal_pos = goal_pos.numpy().astype(np.float32)
-            self.follower_arms[name].write("Goal_Position", goal_pos)
+            self.follower_arms[name].write(
+                "Goal_Position", [-1.7578, 91.3184, 103.5352, 73.2129, 86.6602, 0.1373]
+            )
             self.logs[f"write_follower_{name}_goal_pos_dt_s"] = time.perf_counter() - before_fwrite_t
 
         # Early exit when recording data is not requested
