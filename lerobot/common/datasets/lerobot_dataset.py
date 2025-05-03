@@ -19,6 +19,7 @@ import shutil
 from pathlib import Path
 from typing import Callable
 
+import datetime
 import datasets
 import numpy as np
 import packaging.version
@@ -31,7 +32,10 @@ from huggingface_hub.constants import REPOCARD_NAME
 from huggingface_hub.errors import RevisionNotFoundError
 
 from lerobot.common.constants import HF_LEROBOT_HOME
+# import cv2 # works
 from lerobot.common.datasets.compute_stats import aggregate_stats, compute_episode_stats
+# Throws ImportError: /home/juruc/workspaces/ramp/.pixi/envs/default/lib/python3.11/site-packages/cv2/python-3.11/../../../.././libtiff.so.6: undefined symbol: jpeg12_write_raw_data, version LIBJPEG_8.0
+# import cv2
 from lerobot.common.datasets.image_writer import AsyncImageWriter, write_image
 from lerobot.common.datasets.utils import (
     DEFAULT_FEATURES,
@@ -313,7 +317,15 @@ class LeRobotDatasetMetadata:
         """Creates metadata for a LeRobotDataset."""
         obj = cls.__new__(cls)
         obj.repo_id = repo_id
-        obj.root = Path(root) if root is not None else HF_LEROBOT_HOME / repo_id
+        obj.root = (
+            Path(root)
+            if root is not None
+            else HF_LEROBOT_HOME
+            / repo_id
+            / datetime.datetime.now(tz=datetime.timezone.utc).strftime(
+                "%Y_%m_%d-%H_%M_%S",
+            )
+        )
 
         obj.root.mkdir(parents=True, exist_ok=False)
 

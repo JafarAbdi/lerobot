@@ -33,7 +33,11 @@ from datasets.table import embed_table_storage
 from huggingface_hub import DatasetCard, DatasetCardData, HfApi
 from huggingface_hub.errors import RevisionNotFoundError
 from PIL import Image as PILImage
+# https://github.com/huggingface/lerobot/issues/679
+# https://github.com/huggingface/lerobot/pull/757
+import cv2 # works
 from torchvision import transforms
+# import cv2 # fails
 
 from lerobot.common.datasets.backward_compatibility import (
     V21_MESSAGE,
