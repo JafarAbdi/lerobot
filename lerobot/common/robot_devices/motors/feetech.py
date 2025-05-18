@@ -30,19 +30,19 @@ UPPER_BOUND_DEGREE = 270
 # their nominal range is [0, 100] %. For instance, for Aloha gripper, 0% is fully
 # closed, and 100% is fully open. To account for slight calibration issue, we allow up to
 # [-10, 110] until an error is raised.
-LOWER_BOUND_LINEAR = -5
-UPPER_BOUND_LINEAR = 110
+LOWER_BOUND_LINEAR = -10
+UPPER_BOUND_LINEAR = 90
 GRIPPER_JOINT_NORMALIZER = partial(
     np.interp,
     # xp has to be sorted
-    xp=[535, 2040],
+    xp=[2000, 2500],
     fp=[100.0, 0.0],
 )
 GRIPPER_JOINT_DENORMALIZER = partial(
     np.interp,
     # xp has to be sorted
     xp=[0.0, 100.0],
-    fp=[2040, 535],
+    fp=[2000, 2500],
 )
 
 HALF_TURN_DEGREE = 180

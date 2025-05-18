@@ -445,18 +445,21 @@ class ManipulatorRobot:
             self.leader_arms[name].write("Acceleration", 254)
 
     def teleop_step(
-        self, record_data=False
+        self, record_data=False, events: dict | None = None
     ) -> None | tuple[dict[str, torch.Tensor], dict[str, torch.Tensor]]:
         if not self.is_connected:
             raise RobotDeviceNotConnectedError(
                 "ManipulatorRobot is not connected. You need to run `robot.connect()`."
             )
+        if events is None:
+            events = {}
 
         # Prepare to assign the position of the leader to the follower
         leader_pos = {}
         for name in self.leader_arms:
             before_lread_t = time.perf_counter()
             leader_pos[name] = self.leader_arms[name].read("Present_Position")
+            leader_pos[name][-1] = events["gripper"]
             leader_pos[name] = torch.from_numpy(leader_pos[name])
             self.logs[f"read_leader_{name}_pos_dt_s"] = time.perf_counter() - before_lread_t
 
