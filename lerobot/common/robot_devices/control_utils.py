@@ -256,7 +256,7 @@ def control_loop(
         start_loop_t = time.perf_counter()
 
         if teleoperate:
-            observation, action = robot.teleop_step(record_data=True)
+            observation, action = robot.teleop_step(record_data=True, events=events)
         else:
             observation = robot.capture_observation()
             action = None
@@ -292,7 +292,7 @@ def control_loop(
             busy_wait(1 / fps - dt_s)
 
         dt_s = time.perf_counter() - start_loop_t
-        log_control_info(robot, dt_s, fps=fps)
+        # log_control_info(robot, dt_s, fps=fps)
 
         timestamp = time.perf_counter() - start_episode_t
         if events["exit_early"]:
