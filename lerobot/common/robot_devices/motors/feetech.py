@@ -36,7 +36,7 @@ GRIPPER_JOINT_NORMALIZER = partial(
     np.interp,
     # xp has to be sorted
     xp=[2000, 2500],
-    fp=[100.0, 0.0],
+    fp=[0.0, 100.0],
 )
 GRIPPER_JOINT_DENORMALIZER = partial(
     np.interp,
