@@ -9,6 +9,7 @@ import traceback
 from contextlib import nullcontext
 from copy import copy
 from functools import cache
+import numpy as np
 
 import cv2
 import torch
@@ -258,10 +259,7 @@ def control_loop(
 
         if display_cameras and not is_headless():
             image_keys = [key for key in observation if "image" in key]
-            for key in image_keys:
-                cv2.imshow(key, cv2.cvtColor(observation[key].numpy(), cv2.COLOR_BGR2RGB))
-                # image = cv2.cvtColor(observation[key].numpy(), cv2.COLOR_BGR2RGB)
-                # cv2.imwrite(f"{key}_latest.jpg", image)
+            cv2.imshow("cameras", cv2.cvtColor(np.hstack([observation[key].numpy() for key in image_keys]), cv2.COLOR_BGR2RGB))
             cv2.waitKey(1)
 
         if fps is not None:
