@@ -23,6 +23,7 @@ import traceback
 from contextlib import nullcontext
 from copy import copy
 from functools import cache
+import numpy as np
 
 import rerun as rr
 import torch
