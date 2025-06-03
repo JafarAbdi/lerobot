@@ -257,7 +257,7 @@ def control_loop(
         start_loop_t = time.perf_counter()
 
         if teleoperate:
-            observation, action = robot.teleop_step(record_data=True, events=events)
+            observation, action = robot.teleop_step(record_data=True)
         else:
             observation = robot.capture_observation()
             action = None

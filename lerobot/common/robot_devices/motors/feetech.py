@@ -19,7 +19,6 @@ import time
 import traceback
 from copy import deepcopy
 
-from functools import partial
 import numpy as np
 import tqdm
 
@@ -45,19 +44,7 @@ UPPER_BOUND_DEGREE = 270
 # closed, and 100% is fully open. To account for slight calibration issue, we allow up to
 # [-10, 110] until an error is raised.
 LOWER_BOUND_LINEAR = -10
-UPPER_BOUND_LINEAR = 90
-GRIPPER_JOINT_NORMALIZER = partial(
-    np.interp,
-    # xp has to be sorted
-    xp=[2000, 2500],
-    fp=[0.0, 100.0],
-)
-GRIPPER_JOINT_DENORMALIZER = partial(
-    np.interp,
-    # xp has to be sorted
-    xp=[0.0, 100.0],
-    fp=[2000, 2500],
-)
+UPPER_BOUND_LINEAR = 110
 
 HALF_TURN_DEGREE = 180
 
@@ -483,7 +470,22 @@ class FeetechMotorsBus:
                     )
 
             elif CalibrationMode[calib_mode] == CalibrationMode.LINEAR:
-                values[i] = GRIPPER_JOINT_NORMALIZER(values[i])
+                start_pos = self.calibration["start_pos"][calib_idx]
+                end_pos = self.calibration["end_pos"][calib_idx]
+
+                # Rescale the present position to a nominal range [0, 100] %,
+                # useful for joints with linear motions like Aloha gripper
+                values[i] = (values[i] - start_pos) / (end_pos - start_pos) * 100
+
+                if (values[i] < LOWER_BOUND_LINEAR) or (values[i] > UPPER_BOUND_LINEAR):
+                    raise JointOutOfRangeError(
+                        f"Wrong motor position range detected for {name}. "
+                        f"Expected to be in nominal range of [0, 100] % (a full linear translation), "
+                        f"with a maximum range of [{LOWER_BOUND_LINEAR}, {UPPER_BOUND_LINEAR}] % to account for some imprecision during calibration, "
+                        f"but present value is {values[i]} %. "
+                        "This might be due to a cable connection issue creating an artificial jump in motor values. "
+                        "You need to recalibrate by running: `python lerobot/scripts/control_robot.py calibrate`"
+                    )
 
         return values
 
@@ -613,7 +615,12 @@ class FeetechMotorsBus:
                     values[i] *= -1
 
             elif CalibrationMode[calib_mode] == CalibrationMode.LINEAR:
-                values[i] = GRIPPER_JOINT_DENORMALIZER(values[i])
+                start_pos = self.calibration["start_pos"][calib_idx]
+                end_pos = self.calibration["end_pos"][calib_idx]
+
+                # Convert from nominal lnear range of [0, 100] % to
+                # actual motor range of values which can be arbitrary.
+                values[i] = values[i] / 100 * (end_pos - start_pos) + start_pos
 
         values = np.round(values).astype(np.int32)
         return values
