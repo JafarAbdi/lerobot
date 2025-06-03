@@ -462,8 +462,8 @@ class So100RobotConfig(ManipulatorRobotConfig):
 
     cameras: dict[str, CameraConfig] = field(
         default_factory=lambda: {
-            "wrist": IntelRealSenseCameraConfig(
-                serial_number=145522062152, fps=30, width=640, height=480
+            "wrist": OpenCVCameraConfig(
+                camera_index=2, fps=30, width=640, height=480
             ),
             "scene": IntelRealSenseCameraConfig(
                 serial_number=251622063326, fps=30, width=640, height=480
