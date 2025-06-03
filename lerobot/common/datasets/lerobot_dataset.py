@@ -32,10 +32,7 @@ from huggingface_hub.constants import REPOCARD_NAME
 from huggingface_hub.errors import RevisionNotFoundError
 
 from lerobot.common.constants import HF_LEROBOT_HOME
-# import cv2 # works
 from lerobot.common.datasets.compute_stats import aggregate_stats, compute_episode_stats
-# Throws ImportError: /home/juruc/workspaces/ramp/.pixi/envs/default/lib/python3.11/site-packages/cv2/python-3.11/../../../.././libtiff.so.6: undefined symbol: jpeg12_write_raw_data, version LIBJPEG_8.0
-# import cv2
 from lerobot.common.datasets.image_writer import AsyncImageWriter, write_image
 from lerobot.common.datasets.utils import (
     DEFAULT_FEATURES,
