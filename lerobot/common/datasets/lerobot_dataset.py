@@ -319,9 +319,6 @@ class LeRobotDatasetMetadata:
             if root is not None
             else HF_LEROBOT_HOME
             / repo_id
-            / datetime.datetime.now(tz=datetime.timezone.utc).strftime(
-                "%Y_%m_%d-%H_%M_%S",
-            )
         )
 
         obj.root.mkdir(parents=True, exist_ok=False)
