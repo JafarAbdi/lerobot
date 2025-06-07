@@ -17,6 +17,7 @@
 ########################################################################################
 
 
+import cv2
 import logging
 import time
 import traceback
@@ -278,6 +279,18 @@ def control_loop(
             dataset.add_frame(frame)
 
         # TODO(Steven): This should be more general (for RemoteRobot instead of checking the name, but anyways it will change soon)
+        image_keys = [key for key in observation if "image" in key]
+        cv2.namedWindow("RealSense", cv2.WINDOW_AUTOSIZE)
+        cv2.imshow(
+            "RealSense",
+            cv2.cvtColor(
+                np.hstack(
+                    [observation[key].numpy() for key in image_keys]
+                ),
+                cv2.COLOR_BGR2RGB,
+            ),
+        )
+        cv2.waitKey(1)
         if (display_data and not is_headless()) or (display_data and robot.robot_type.startswith("lekiwi")):
             if action is not None:
                 for k, v in action.items():
